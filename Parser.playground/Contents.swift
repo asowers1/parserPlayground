@@ -130,12 +130,13 @@ func lex(var currentAttribute: String, index: Int, str: String, state: ReadingSt
       lex(currentAttribute, index: index+1, str: str, state: .ReadingNonterminal)
     }
   case .ReadingTerminal:
+    //print(acceptableTerminalChar(currentAttribute[currentAttribute.startIndex.advancedBy(index)], nextChar: allowNPlusOne(index+1, str: str) ? str[str.startIndex.advancedBy(index)] : nil))
+    print("current index: \(index), char: \(str[str.startIndex.advancedBy(index)])")
     if str[str.startIndex.advancedBy(index)] == ">" {
       lex(currentAttribute, index: index+1, str: str, state: .ReadingNonterminal)
     } else {
-      lex(currentAttribute, index: index+1, str: str, state: .ReadingNonterminal)
+      lex(currentAttribute, index: index+1, str: str, state: .ReadingTerminal)
     }
-    print(acceptableTerminalChar(currentAttribute[currentAttribute.startIndex.advancedBy(index)], nextChar: allowNPlusOne(index+1, str: str) ? str[str.startIndex.advancedBy(index)] : nil))
     
   }
 }
