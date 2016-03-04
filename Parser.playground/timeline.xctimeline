@@ -3,17 +3,22 @@
    version = "3.0">
    <TimelineItems>
       <LoggerValueHistoryTimelineItem
-         documentLocation = "file:///Users/andrew/Box/Parser.playground#CharacterRangeLen=118&amp;CharacterRangeLoc=3024&amp;EndingLineNumber=143&amp;StartingLineNumber=143&amp;Timestamp=478475322.610574"
+         documentLocation = "file:///Users/andrew/Box/Parser.playground#CharacterRangeLen=121&amp;CharacterRangeLoc=5638&amp;EndingLineNumber=239&amp;StartingLineNumber=239&amp;Timestamp=478817651.844553"
          selectedRepresentationIndex = "0"
          shouldTrackSuperviewWidth = "NO">
       </LoggerValueHistoryTimelineItem>
       <LoggerValueHistoryTimelineItem
-         documentLocation = "#CharacterRangeLen=16&amp;CharacterRangeLoc=2079&amp;EndingColumnNumber=21&amp;EndingLineNumber=119&amp;StartingColumnNumber=5&amp;StartingLineNumber=119&amp;Timestamp=478474757.219942"
+         documentLocation = "#CharacterRangeLen=1&amp;CharacterRangeLoc=5213&amp;EndingColumnNumber=189&amp;EndingLineNumber=226&amp;StartingColumnNumber=5&amp;StartingLineNumber=226&amp;Timestamp=478817651.844677"
+         selectedRepresentationIndex = "1"
+         shouldTrackSuperviewWidth = "NO">
+      </LoggerValueHistoryTimelineItem>
+      <LoggerValueHistoryTimelineItem
+         documentLocation = "#CharacterRangeLen=0&amp;CharacterRangeLoc=4971&amp;EndingColumnNumber=27&amp;EndingLineNumber=218&amp;StartingColumnNumber=13&amp;StartingLineNumber=218&amp;Timestamp=478817611.658074"
          selectedRepresentationIndex = "0"
          shouldTrackSuperviewWidth = "NO">
       </LoggerValueHistoryTimelineItem>
       <LoggerValueHistoryTimelineItem
-         documentLocation = "#CharacterRangeLen=80&amp;CharacterRangeLoc=2698&amp;EndingColumnNumber=37&amp;EndingLineNumber=133&amp;StartingColumnNumber=5&amp;StartingLineNumber=133&amp;Timestamp=478475322.610849"
+         documentLocation = "#CharacterRangeLen=0&amp;CharacterRangeLoc=4971&amp;EndingColumnNumber=83&amp;EndingLineNumber=218&amp;StartingColumnNumber=13&amp;StartingLineNumber=218&amp;Timestamp=478817611.658206"
          selectedRepresentationIndex = "1"
          shouldTrackSuperviewWidth = "NO">
       </LoggerValueHistoryTimelineItem>

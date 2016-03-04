@@ -96,15 +96,85 @@ struct State<T> {
   }
 }
 
-func acceptableTerminalChar(char:Character, nextChar: Character?) -> Bool {
-  let charAsStr = String(char)
-  let nextCharAsStr = String(nextChar)
-  
-  print(charAsStr)
-  print(nextCharAsStr)
-  
-  return false
+func acceptableTerminalChar(char:Character, nextChar: Character) -> Bool {
+    let charAsStr = String(char)
+    let nextCharAsStr = String(nextChar)
+    switch charAsStr {
+    case "<":
+    switch nextCharAsStr {
+    case "b": return true
+    case "e": return true
+    case "i": return true
+    case "s": return true
+    case "u": return true
+    case "c": return true
+    default: return false
+    }
+    case ">": return true
+    case "/":
+    switch nextCharAsStr {
+    case "b": return true
+    case "c": return true
+    case "e": return true
+    case "i": return true
+    case "s": return true
+    case "u": return true
+    default: return true
+    }
+    case "a":
+    switch nextCharAsStr {
+    case "l": return true
+    default: return false
+    }
+    case "b":
+    switch nextCharAsStr {
+    case ">": return true
+    default: return false
+    }
+    case "c":
+    switch nextCharAsStr {
+    case "o": return true
+    default: return false
+    }
+    case "e":
+    switch nextCharAsStr {
+    case ">": return true
+    default: return false
+    }
+    case "i":
+    switch nextCharAsStr {
+    case ">": return true
+    default: return false
+    }
+    case "l":
+    switch nextCharAsStr {
+    case "o": return true
+    case "l": return true
+    case ">": return true
+    default: return false
+    }
+    case "o":
+    switch nextCharAsStr {
+    case "l": return true
+    case "r": return true
+    default: return false
+    }
+    case "s":
+    switch nextCharAsStr {
+    case "m": return true
+    case ">": return true
+    default: return false
+    }
+    case "u":
+    switch nextCharAsStr {
+    case ">": return true
+    default: return false
+    }
+    default: return false
+    }
 }
+
+var strArr = [String]()
 
 enum ReadingStates: String {
   case ReadingTerminal = "ReadingTerminal"
@@ -115,33 +185,64 @@ func allowNPlusOne(index: Int, str: String) -> Bool {
   return index < str.characters.count ? true : false
 }
 
-func lex(var currentAttribute: String, index: Int, str: String, state: ReadingStates) {
-  if allowNPlusOne(index, str: str){
-    currentAttribute += String(str[str.startIndex.advancedBy(index)])
+func lex(var currentAttribute: String, index: Int, source: String, state: ReadingStates, var currentLexeme: String? = nil) {
+  if allowNPlusOne(index, str: source){
+    currentAttribute += String(source[source.startIndex.advancedBy(index)])
   } else {
     return
   }
   switch state {
   case .ReadingNonterminal:
-    print(currentAttribute)
-    if str[str.startIndex.advancedBy(index)] == "<" {
-      lex(currentAttribute, index: index+1, str: str, state: .ReadingTerminal)
+    
+    if source[source.startIndex.advancedBy(index)] == "<" {
+        if let _ = currentLexeme {
+            strArr.append(currentLexeme!)
+        }
+        lex(currentAttribute, index: index+1, source: source, state: .ReadingTerminal, currentLexeme: "<")
     } else {
-      lex(currentAttribute, index: index+1, str: str, state: .ReadingNonterminal)
+        if let _ = currentLexeme {
+            currentLexeme = currentLexeme! + String(currentAttribute[currentAttribute.startIndex.advancedBy(index)])
+        } else {
+            currentLexeme = String(currentAttribute[currentAttribute.startIndex.advancedBy(index)])
+        }
+        lex(currentAttribute, index: index+1, source: source, state: .ReadingNonterminal, currentLexeme: currentLexeme)
     }
+    
   case .ReadingTerminal:
-    //print(acceptableTerminalChar(currentAttribute[currentAttribute.startIndex.advancedBy(index)], nextChar: allowNPlusOne(index+1, str: str) ? str[str.startIndex.advancedBy(index)] : nil))
-    print("current index: \(index), char: \(str[str.startIndex.advancedBy(index)])")
-    if str[str.startIndex.advancedBy(index)] == ">" {
-      lex(currentAttribute, index: index+1, str: str, state: .ReadingNonterminal)
+    if allowNPlusOne(index+1, str: source) {
+        if acceptableTerminalChar(currentAttribute[currentAttribute.startIndex.advancedBy(index)], nextChar: str[str.startIndex.advancedBy(index+1)]) {
+            if let _ = currentLexeme {
+                currentLexeme = currentLexeme! + String(currentAttribute[currentAttribute.startIndex.advancedBy(index)])
+            } else {
+                currentLexeme = String(currentAttribute[currentAttribute.startIndex.advancedBy(index)])
+            }
+        }
     } else {
-      lex(currentAttribute, index: index+1, str: str, state: .ReadingTerminal)
+        // done, so try and build the tree
+        if source[source.startIndex.advancedBy(index)] == ">" {
+            if let _ = currentLexeme {
+                currentLexeme = currentLexeme! + ">"
+            }
+        }
+    }
+    if source[source.startIndex.advancedBy(index)] == ">" {
+        print(currentLexeme!)
+        strArr.append(currentLexeme!)
+        currentLexeme = nil
+        lex(currentAttribute, index: index+1, source: source, state: .ReadingNonterminal, currentLexeme: currentLexeme)
+    } else {
+        lex(currentAttribute, index: index+1, source: source, state: .ReadingTerminal, currentLexeme: currentLexeme)
     }
     
   }
 }
 
-lex("", index: 0, str: str, state: str[str.startIndex.advancedBy(0)] == "<" ? .ReadingTerminal : .ReadingNonterminal)
+lex("", index: 0, source: str, state: str[str.startIndex.advancedBy(0)] == "<" ? .ReadingTerminal : .ReadingNonterminal)
+
+
+for str in strArr {
+    print(str)
+}
 
 func applyAttricutes() { // this will take in the queue of attributes and apply their properties to the string. Finally, it should return the fully attributed string
   
