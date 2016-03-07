@@ -1,8 +1,19 @@
 //: Playground - noun: a place where people can play
 
 import UIKit
+import Foundation
 
-var str = "Hi there! <b>Hello</b>, <u>playground</u>"
+var str = "<color:\(UIColor.blueColor)>Hi there!</color> <b:Helvetica>Hello</b>, <u>playground</u>"
+
+struct Attribute {
+    var name: String
+    var value: AnyObject
+    
+    init(name: String, value: AnyObject) {
+        self.name = name
+        self.value = value
+    }
+}
 
 class QNode<T> {
   var value: T
@@ -65,41 +76,11 @@ public struct TSQueue<T> {
   
 }
 
-typealias b = String
-typealias e = String
-typealias i = String
-typealias small = String
-typealias s = String
-typealias u = String
-typealias color = String
-
-enum Element: String {
-  case b = "b"
-  case e = "e"
-  case i = "i"
-  case small = "small"
-  case s = "s"
-  case u = "u"
-  case color = "color"
-}
-
-struct Attribute {
-  var string: String?
-  var attributeName: String?
-  var value: AnyObject
-}
-
-struct State<T> {
-  var keyword: T
-  init(keyword: T) {
-    self.keyword = keyword
-  }
-}
-
 func acceptableTerminalChar(char:Character, nextChar: Character) -> Bool {
     let charAsStr = String(char)
     let nextCharAsStr = String(nextChar)
     switch charAsStr {
+    case ":": return true
     case "<":
     switch nextCharAsStr {
     case "b": return true
@@ -128,6 +109,7 @@ func acceptableTerminalChar(char:Character, nextChar: Character) -> Bool {
     }
     case "b":
     switch nextCharAsStr {
+    case ":": return true
     case ">": return true
     default: return false
     }
@@ -159,6 +141,12 @@ func acceptableTerminalChar(char:Character, nextChar: Character) -> Bool {
     case "r": return true
     default: return false
     }
+    case "r":
+    switch nextCharAsStr {
+    case ":": return true
+    case ">": return true
+    default: return false
+    }
     case "s":
     switch nextCharAsStr {
     case "m": return true
@@ -178,6 +166,7 @@ var strArr = [String]()
 
 enum ReadingStates: String {
   case ReadingTerminal = "ReadingTerminal"
+  case ReadingTerminalAttribute = "ReadingTerminalAttribute"
   case ReadingNonterminal = "ReadingNonterminal"
 }
 
@@ -208,6 +197,20 @@ func lex(var currentAttribute: String, index: Int, source: String, state: Readin
         lex(currentAttribute, index: index+1, source: source, state: .ReadingNonterminal, currentLexeme: currentLexeme)
     }
     
+  case .ReadingTerminalAttribute:
+    if source[source.startIndex.advancedBy(index)] == ">" {
+        if let _ = currentLexeme {
+            currentLexeme = currentLexeme! + String(currentAttribute[currentAttribute.startIndex.advancedBy(index)])
+            strArr.append(currentLexeme!)
+            lex(currentAttribute, index: index+1, source: source, state: .ReadingNonterminal)
+        }
+    } else {
+        if let _ = currentLexeme {
+            currentLexeme = currentLexeme! + String(currentAttribute[currentAttribute.startIndex.advancedBy(index)])
+            lex(currentAttribute, index: index+1, source: source, state: .ReadingTerminalAttribute, currentLexeme: currentLexeme)
+        }
+    }
+    
   case .ReadingTerminal:
     if allowNPlusOne(index+1, str: source) {
         if acceptableTerminalChar(currentAttribute[currentAttribute.startIndex.advancedBy(index)], nextChar: str[str.startIndex.advancedBy(index+1)]) {
@@ -226,12 +229,12 @@ func lex(var currentAttribute: String, index: Int, source: String, state: Readin
         }
     }
     if source[source.startIndex.advancedBy(index)] == ">" {
-        print(currentLexeme!)
         strArr.append(currentLexeme!)
         currentLexeme = nil
         lex(currentAttribute, index: index+1, source: source, state: .ReadingNonterminal, currentLexeme: currentLexeme)
     } else {
-        lex(currentAttribute, index: index+1, source: source, state: .ReadingTerminal, currentLexeme: currentLexeme)
+        let readingTerminalState = source[source.startIndex.advancedBy(index)] == ":" ? ReadingStates.ReadingTerminalAttribute : ReadingStates.ReadingTerminal
+        lex(currentAttribute, index: index+1, source: source, state: readingTerminalState, currentLexeme: currentLexeme)
     }
     
   }
@@ -239,10 +242,7 @@ func lex(var currentAttribute: String, index: Int, source: String, state: Readin
 
 lex("", index: 0, source: str, state: str[str.startIndex.advancedBy(0)] == "<" ? .ReadingTerminal : .ReadingNonterminal)
 
-
-for str in strArr {
-    print(str)
-}
+print(strArr)
 
 func applyAttricutes() { // this will take in the queue of attributes and apply their properties to the string. Finally, it should return the fully attributed string
   
